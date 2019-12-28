@@ -1,0 +1,33 @@
+--- 
+nginx: 
+  container_name: nginx
+  hostname: nginx
+  image: nginx
+  ports: 
+    - "82:80"
+  valumes: 
+    - "/root/harper-nginx-tomcat/nginx/nginx:conf:/etc/nginx/nginx.conf"
+tomcat1: 
+  container_name: tomcat1
+  hostname: tomcat1
+  image: harper/tomcat:3.0
+  ports: 
+    - "8081:8080"
+  volumes: 
+    - "/root/harper-nginx-tomcat/tomcat1/:/usr/local/tomcat/webapps/ROOT/"
+tomcat2: 
+  container_name: tomcat2
+  hostname: tomcat2
+  image: harper/tomcat:3.0
+  ports: 
+    - "8082:8080"
+  volumes: 
+    - "/root/harper-nginx-tomcat/tomcat2/:/usr/local/tomcat/webapps/ROOT/"
+tomcat3: 
+  container_name: tomcat3
+  hostname: tomcat3
+  image: harper/tomcat:3.0
+  ports: 
+    - "8083:8080"
+  volumes: 
+    - "/root/harper-nginx-tomcat/tomcat2/:/usr/local/tomcat/webapps/ROOT/"

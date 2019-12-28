@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://mycluster</value>
+    </property>
+	<!--
+	<property>
+		<name>hadoop.tmp.dir</name>
+		<value>/root/hdfs</value>
+	</property>
+    -->
+   <!-- 指定 zookeeper 集群访问地址 -->
+   <!--
+		Ha功能，需要一组zk地址，用逗号分隔。被ZKFailoverController使用于自动失效备援failover。
+	-->
+    <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>hadoop-master:2181,hadoop-slave1:2181,hadoop-slave2:2181</value>
+    </property>
+	<!--
+		检查点被删除后的分钟数。 如果为零，垃圾桶功能将被禁用。 
+		该选项可以在服务器和客户端上配置。 如果垃圾箱被禁用服务器端，则检查客户端配置。 
+		如果在服务器端启用垃圾箱，则会使用服务器上配置的值，并忽略客户端配置值。
+	 -->
+	<property>
+		 <name>fs.trash.interval</name>
+		 <value>2</value>
+	</property>
+	<!--
+		垃圾检查点之间的分钟数。 应该小于或等于fs.trash.interval。 
+		如果为零，则将该值设置为fs.trash.interval的值。 每次检查指针运行时，
+		它都会从当前创建一个新的检查点，并删除比fs.trash.interval更早创建的检查点。
+	-->
+	<property>
+		<name>fs.trash.checkpoint.interval</name>
+		<value>1</value>
+	</property>
+	<!--
+		在网页界面访问数据使用的用户名。默认值是一个不真实存在的用户，此用户权限很小，
+		不能访问不同用户的数据。这保证了数据安全。也可以设置为hdfs和hadoop等具有较高
+		权限的用户，但会导致能够登陆网页界面的人能看到其它用户数据。实际设置请综合考虑。
+		如无特殊需求。使用默认值就好
+	-->
+	<property>
+		<name>hadoop.http.staticuser.user</name>
+		<value>root</value>
+	</property>
+	
+</configuration>

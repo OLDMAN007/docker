@@ -1,0 +1,23 @@
+--- 
+mysql-master: 
+  container_name: mysql-master
+  environment: 
+    - MYSQL_ROOT_PASSWORD=root
+  hostname: msyql-master
+  image: "mysql:5.7"
+  ports: 
+    - "3306:3306"
+  volumes: 
+    - "/root/harper-mysql/mysqlData/master/cnf:/etc/mysql/conf.d"
+    - "/root/harper-mysql/mysqlData/master/data:/var/lib/mysql"
+mysql-slave: 
+  container_name: mysql-slave
+  environment: 
+    - MYSQL_ROOT_PASSWORD=root
+  hostname: msyql-slave
+  image: "mysql:5.7"
+  ports: 
+    - "3307:3306"
+  volumes: 
+    - "/root/harper-mysql/mysqlData/slave/cnf:/etc/mysql/conf.d"
+    - "/root/harper-mysql/mysqlData/slave/data:/var/lib/mysql"

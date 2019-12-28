@@ -1,0 +1,65 @@
+--- 
+services: 
+  hadoop-master: 
+    command: 
+      - /bin/sh
+      - "-c"
+      - |
+          echo 1 >>/usr/local/zookeeper-3.4.6/data/myid
+          systemctl start sshd
+          zkServer.sh start
+          /usr/sbin/init
+    container_name: hadoop-master
+    depends_on:
+      - hadoop-slave1
+      - hadoop-slave2
+    environment: 
+      container: docker
+    hostname: hadoop-master
+    image: "harper/hadoop-cluster:8.0"
+    network_mode: hadoop
+    ports: 
+      - "8088:8088"
+      - "8080:8080"
+      - "50070:50070"
+    privileged: true
+    volumes: 
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+  hadoop-slave1: 
+    command: 
+      - /bin/sh
+      - "-c"
+      - |
+          echo 2 >>/usr/local/zookeeper-3.4.6/data/myid
+          systemctl start sshd
+          zkServer.sh start
+          /usr/sbin/init
+    container_name: hadoop-slave1
+    environment: 
+      container: docker
+    hostname: hadoop-slave1
+    image: "harper/hadoop-cluster:8.0"
+    network_mode: hadoop
+    privileged: true
+    volumes: 
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+  hadoop-slave2: 
+    command: 
+      - /bin/sh
+      - "-c"
+      - |
+          echo 3 >>/usr/local/zookeeper-3.4.6/data/myid
+          systemctl start sshd
+          zkServer.sh start
+          /usr/sbin/init
+    container_name: hadoop-slave2
+    environment: 
+      container: docker
+    hostname: hadoop-slave2
+    image: "harper/hadoop-cluster:8.0"
+    network_mode: hadoop
+    privileged: true
+    volumes: 
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+version: "3.4"
+

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///root/hdfs/namenode</value>
+        <description>NameNode directory for namespace and transaction logs storage.</description>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///root/hdfs/datanode</value>
+        <description>DataNode directory</description>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+    
+	<!-- 
+		自定义完全分布式集群名称:
+		在单NameNode节点的集群中，对HDFS集群访问的入口是NameNode所在的服务器。但是在两个NameNode
+		节点的HA集群中，无法配置单一服务器入口。所以需要指定一个逻辑上的服务名，这个服务名是自定义的。
+		当外界访问HDFS集群时，入口就变为这个服务。用户不必关心当前具体是哪台服务器在提供服务（Active状态），
+		只要访问这个服务就可以了
+	 -->
+	<property>
+		<name>dfs.nameservices</name>
+		<value>mycluster</value>
+	</property>
+	<!-- 
+		集群中NameNode节点名称 
+		此处为两个NameNode的唯一标识。在HDFS集群管理中会用到
+	-->
+	<property>
+		<name>dfs.ha.namenodes.mycluster</name>
+		<value>nn1,nn2</value>
+	</property>
+	<!-- 分别指定每个NameNode的RPC服务完整监听地址（hostname+端口号） -->
+	<property>
+	  <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+	  <value>hadoop-master:9000</value>
+	</property>
+	<property>
+	  <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+	  <value>hadoop-slave1:9000</value>
+	</property>
+	<!-- 指定两个NameNode的http服务地址 -->
+	<property>
+		<name>dfs.namenode.http-address.mycluster.nn1</name>
+		<value>hadoop-master:50070</value>
+	</property>
+	<property>
+		<name>dfs.namenode.http-address.mycluster.nn2</name>
+		<value>hadoop-slave1:50070</value>
+	</property>
+	<!-- 
+		QJM访问地址
+		在没有配置HA机制的Hadoop分布式系统中，这个值应该置空。用来进行两个NameNode节点的
+		元数据同步。推荐将nameservice ID作为最后的journal ID。配置的节点将会开启journalnode进程。
+	 -->
+	<property>
+		<name>dfs.namenode.shared.edits.dir</name>
+		<value>qjournal://hadoop-master:8485;hadoop-slave1:8485;hadoop-slave2:8485/mycluster</value>
+	</property>
+	<!-- 
+		访问代理类：client，mycluster，active配置失败自动切换实现方式
+		HDFS客户端用来连接集群中Active状态节点的Java类，ConfiguredFailoverProxyProvider是目前唯一可以指定的类
+	-->
+	<property>
+		<name>dfs.client.failover.proxy.provider.mycluster</name>
+		<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+	</property>
+	<!-- 
+			配置隔离机制 
+			避免两个NN都为Active状态
+			nn 状态： standby -> 待机状态
+							 active  -> 服务状态
+			active 状态
+				-> 健康
+				-> 不健康 ： 当前namenode服务正常运行，但是外部无法访问。
+			
+			sshfence方法会通过ssh远程调用fuser命令去找到NameNode服务并杀死它
+	 -->
+	<property>
+		  <name>dfs.ha.fencing.methods</name>
+		  <value>sshfence</value>
+	</property>
+	<!-- 使用隔离机制时需要ssh无秘钥登录-->
+	<property>
+		  <name>dfs.ha.fencing.ssh.private-key-files</name>
+		  <value>/root/.ssh/id_rsa</value>
+	</property>
+	<!-- 声明journalnode服务器存储目录-->
+	<property>
+		  <name>dfs.journalnode.edits.dir</name>
+		  <value>/root/hdfs/jnode_edits_dir</value>
+	</property>
+	<!-- 关闭权限检查-->
+	<property>
+		<name>dfs.permissions.enable.mycluster</name>
+		<value>false</value>
+	</property>
+	
+	 <!-- 是否开启自动failover机制-->
+	<property>
+		<name>dfs.ha.automatic-failover.enabled</name>
+		<value>true</value>
+	</property>
+</configuration>
